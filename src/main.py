@@ -1,5 +1,7 @@
 from fastapi import FastAPI
 
+from src.projects.controllers.project_controller import router as project_router
+
 app = FastAPI(
     title="TaskBridge API",
     version="1.0.0"
@@ -8,3 +10,6 @@ app = FastAPI(
 @app.get("/")
 def health():
     return {"status": "running"}
+
+
+app.include_router(project_router)
