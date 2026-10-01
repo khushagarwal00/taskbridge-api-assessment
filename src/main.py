@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from src.notifications.controllers.notification_controller import router as notification_router
 from src.projects.controllers.project_controller import router as project_router
 
 app = FastAPI(
@@ -13,3 +14,4 @@ def health():
 
 
 app.include_router(project_router)
+app.include_router(notification_router)
