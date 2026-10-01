@@ -94,6 +94,26 @@ class NotificationService:
 			unread_only,
 		)
 
+	def send_to_team_members(
+		self,
+		organization_id: UUID,
+		recipient_ids: list[str],
+		project_id: UUID,
+		message: str,
+	) -> list[Notification]:
+		if not message.strip():
+			raise ValueError("message must not be empty")
+		if any(not recipient_id.strip() for recipient_id in recipient_ids):
+			raise ValueError("recipient IDs must not be empty")
+		unique_recipient_ids = list(dict.fromkeys(recipient_ids))
+		with self.db.begin():
+			return self.repository.create_notifications(
+				organization_id,
+				unique_recipient_ids,
+				project_id,
+				message,
+			)
+
 	def mark_notification_read(
 		self,
 		notification_id: UUID,

@@ -13,6 +13,26 @@ class NotificationRepository:
 	def __init__(self, db: Session) -> None:
 		self.db = db
 
+	def create_notifications(
+		self,
+		organization_id: UUID,
+		recipient_ids: list[str],
+		project_id: UUID,
+		message: str,
+	) -> list[Notification]:
+		notifications = [
+			Notification(
+				organization_id=organization_id,
+				recipient_id=recipient_id,
+				project_id=project_id,
+				message=message,
+			)
+			for recipient_id in recipient_ids
+		]
+		self.db.add_all(notifications)
+		self.db.flush()
+		return notifications
+
 	def get_audit_entry_by_event_id(self, event_id: UUID) -> AuditEntry | None:
 		return self.db.scalar(select(AuditEntry).where(AuditEntry.event_id == event_id))
 
